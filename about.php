@@ -1,9 +1,8 @@
-<?php $page_title = 'Quiz Master > About'; ?>
+<?php $page_title = 'Gpuzzles > About'; ?>
 <?php include('header.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <title> JavaScript Quiz (About) </title>
@@ -55,7 +54,7 @@
     <!--this is the tool bar-->
 
     <h2 id="title">About Us</h2>
-    <h4 class="directions">This Quiz Master project was created in the 2018-2019 school year by ICS 325 Internet Application Development class Students. Each of us have picked up a topic and prepared a set of 10-20 questions. We have then plugged in those questions into the Quiz Master application we have developed in the class. We used GitHub to download the master baseline and to ingegrate our changes. Take the quiz and test your knowledge about India and its culture. Enjoy! <br> </h4>
+    <h4 class="directions">This GPuzzles project was created in the 2018-2019 school year by ICS 325 Internet Application Development class Students. Each of us have picked up a topic and prepared a set of 10-20 questions. We have then plugged in those questions into the Quiz Master application we have developed in the class. We used GitHub to download the master baseline and to ingegrate our changes. Take the quiz and test your knowledge about India and its culture. Enjoy! <br> </h4>
     <h4 class="directions">Click on each image to learn more about us.</h4>
 </body>
 

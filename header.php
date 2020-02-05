@@ -1,7 +1,8 @@
+
 <?php
 
 session_start();
-if(!isset($page_title)) { $page_title = 'Quiz Master'; }
+if(!isset($page_title)) { $page_title = 'GPuzzles'; }
 
 ?>
 <!DOCTYPE html>
@@ -30,7 +31,7 @@ if(!isset($page_title)) { $page_title = 'Quiz Master'; }
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <a href="index.php" title="SILC Quiz Master"><img id="silc" src="Images/index_images/silc_home.jpg"></a> 
+            <a href="index.php" title="SILC GPuzzles"><img id="silc" src="Images/index_images/silc_home.jpg"></a> 
             
             <!-- Login / Logout Nav menu item
                Checks if there is a valid session and if so displays "logout"
@@ -46,13 +47,15 @@ if(!isset($page_title)) { $page_title = 'Quiz Master'; }
         <li class="nav-item">
             <?php
             if (isset($_SESSION['role'])){
-                echo '<li class="nav-item active"><a class="nav-link" id="header" href="questions_list.php">Questions List<span class="sr-only">(current)</span></a>';
+                echo '<li class="nav-item active"><a class="nav-link" id="header" href="puzzle_list.php">puzzle List<span class="sr-only">(current)</span></a>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="topics_list.php">Topics List<span class="sr-only">(current)</span></a>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="preferences.php">Preferences<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="about.php">About<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="help.php">Help<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="logout.php">Logout<span class="sr-only">(current)</span></a></li>';
             } else {
+                echo '<li class="nav-item active"><a class="nav-link" id="header" href="puzzle_list.php">puzzle List<span class="sr-only">(current)</span></a>';
+                echo '<li class="nav-item active"><a class="nav-link" id="header" href="preferences.php">Preferences<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="about.php">About<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="help.php">Help<span class="sr-only">(current)</span></a></li>';
                 echo '<li class="nav-item active"><a class="nav-link" id="header" href="loginForm.php">Login<span class="sr-only">(current)</span></a></li>';

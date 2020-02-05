@@ -2,12 +2,12 @@
 
 include_once 'db_configuration.php';
 
-if (isset($_POST['topic'])){
+if (isset($_POST['name'])){
 
-    $topic = mysqli_real_escape_string($db, $_POST['topic']);
-    $image_name = mysqli_real_escape_string($db, $_POST['image_name']);
+    $name = mysqli_real_escape_string($db, $_POST['name']);
+   
  
-    $sql = "SELECT * FROM `questions` where topic= '$topic' ";
+    $sql = "SELECT * FROM `questions` where name= '$name' ";
 
 
 
@@ -18,21 +18,18 @@ if (isset($_POST['topic'])){
   
   if ($result->num_rows > 0) {
     echo '<script language="javascript">';
-    echo 'alert("Can not delete this topic because it associated with one or more questions");';
+    echo 'alert("Can not delete this name because it associated with one or more questions");';
     echo ' history.go(-2); </script>';
 
     }
     else {
         $sql = "DELETE FROM topics
-        WHERE topic = '$topic'";
-            $sql2 ="SELECT * From topics where topic = '$topic'";
-            $GLOBALS['topic'] = mysqli_query($db, $sql2);
-            $GLOBALS['image_name'] = mysqli_query($db, $sql2);
+        WHERE name = '$name'";
+            $sql2 ="SELECT * From topics where name = '$name'";
+            $GLOBALS['name'] = mysqli_query($db, $sql2);
+            
         
-            $file=$row["image_name"];
-           
-            unlink($image_name);
-
+        
 mysqli_query($db, $sql);
 header('location: topics_list.php?topicDeleted=Success');
 

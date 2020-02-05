@@ -1,5 +1,5 @@
 <?php 
-$page_title = "Quiz Master > " . $_GET['topic'] . " Quiz";
+$page_title = "GPuzzles > " . $_GET['name'] . " puzzle";
 require 'bin/functions.php';
 require 'db_configuration.php';
 include('header.php');
@@ -7,7 +7,7 @@ include('header.php');
 // functions
 function getNumQuestionsForThisQuiz($quiz_topic){
     global $db; // tell the function to use to global variable $db
-    $sql = "select count(topic) as c from questions where topic = '$quiz_topic'";
+    $sql = "select count(name) as c from questions where name = '$quiz_topic'";
     $results = mysqli_query($db,$sql);
 
     $num_questions_found = 0;
@@ -39,19 +39,19 @@ function getNumQuestionsToShow(){
 
 function getQuestion($quiz_topic, $question_num){
     global $db; // tell the function to use to global variable $db
-    $sql = "select id, question from questions where topic = '$quiz_topic' ";
+    $sql = "select id, creator_name from gpuzzles where name = '$quiz_topic' ";
     $results = mysqli_query($db,$sql);
 
-    $question = "Error";
+    $creator_name = "Error";
     if ($question_num == 0)
-        return $question; // return error as we cannot get the question 0-1 or -1 as it doesn't exist
+        return $creator_name; // return error as we cannot get the question 0-1 or -1 as it doesn't exist
     if(mysqli_num_rows($results)>0 && mysqli_num_rows($results)>=$question_num){
         while($row = mysqli_fetch_assoc($results)){
             $rows[] = $row;
         }
-        $question = $rows[$question_num-1]['question'];
+        $creator_name = $rows[$question_num-1]['creator_name'];
     }
-    return $question;
+    return $creator_name;
 }
 
 function getAnswers($quiz_topic, $question_ID){
@@ -60,7 +60,7 @@ function getAnswers($quiz_topic, $question_ID){
     // this fixes a bug where the same question answers would be selected when multiple questions had
     // the same text/string (ie dances quiz)
     $sql = "select choice_1, choice_2, choice_3, choice_4 from questions where "
-        . "topic = '$quiz_topic' and id = '$question_ID'";
+        . "name = '$quiz_topic' and id = '$question_ID'";
     $results = mysqli_query($db,$sql);
 
     $answers = array();
@@ -80,7 +80,7 @@ function isAnswerRight($quiz_topic, $question_num, $user_answer){
     global $db; // tell the function to use to global variable $db
     $question_ID = getQuestionID($quiz_topic, $question_num); // returns the id for this particular question
     $user_answer_ID = getIdFromQuizABCD($user_answer); // converts a,b,c,d to 1,2,3,4 or 5
-    $sql = "select choice_1, choice_2, choice_3, choice_4, answer from questions where topic = '$quiz_topic' "
+    $sql = "select choice_1, choice_2, choice_3, choice_4, answer from questions where name = '$quiz_topic' "
         . "and id = '$question_ID'";
     $results = mysqli_query($db,$sql);
     $correct_answer_ID = 0;
@@ -149,7 +149,7 @@ function printoutQuizResults($quiz_topic, $num_questions_to_show){
             $user_answer = $_SESSION[$question_ID];
         }
         $sql = "select question, choice_1, choice_2, choice_3, choice_4, answer, image_name from "
-            . "questions where topic = '$quiz_topic' and id = '$question_ID'";
+            . "questions where name = '$quiz_topic' and id = '$question_ID'";
         $results = mysqli_query($db,$sql);
         $rows = null;
         if(mysqli_num_rows($results) > 0){
@@ -190,20 +190,20 @@ function printoutQuizResults($quiz_topic, $num_questions_to_show){
             $user_answer = $rows[0]['choice_4'];
         }
 
-        $question = $rows[0]['question'];
-        $image_address = $rows[0]['image_name'];
+        $creator_name = $rows[0]['creator_name'];
+        $image_address = $rows[0]['puzzle_image'];
 
         if ($user_answer == $correct_answer){
             // user got correct answer, display user answer in green
             echo "<img src='$image_address' style='max-height:250px;width:auto;'><br>";
-            echo "<h4>Q$i: $question</h4>";
+            echo "<h4>Q$i: $creator_name</h4>";
             echo "<div class='correct_answer'>Your answer: $user_answer</div>";
             echo "<div class='answer'>Correct answer: $correct_answer</div><br>";
         }
         else if ($user_answer != $correct_answer){
             // user got incorrect answer, display user answer in red
             echo "<img src='$image_address' style='max-height:250px;width:auto;'><br>";
-            echo "<h4>Q$i: $question</h4>";
+            echo "<h4>Q$i: $creator_name</h4>";
             echo "<div class='incorrect_answer'>Your answer: $user_answer</div>";
             echo "<div class='answer'>Correct answer: $correct_answer</div><br>";
         }
@@ -224,7 +224,7 @@ function getIdFromQuizABCD($abcd_string){
 
 function getQuestionID($quiz_topic, $current_page){
     global $db; // tell the function to use to global variable $db
-    $sql = "select id from questions where topic = '$quiz_topic' order by id ASC";
+    $sql = "select id from questions where name = '$quiz_topic' order by id ASC";
     $results = mysqli_query($db,$sql);
 
     if ($current_page < 1)
@@ -240,7 +240,7 @@ function getQuestionID($quiz_topic, $current_page){
 
 function getImageAddress($quiz_topic, $question_ID){
     global $db; // tell the function to use to global variable $db
-    $sql = "select image_name from questions where topic = '$quiz_topic' and id = '$question_ID'";
+    $sql = "select image_name from questions where name = '$quiz_topic' and id = '$question_ID'";
     $results = mysqli_query($db,$sql);
 
     $image_address = "Error";
@@ -263,7 +263,7 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
 
 <html>
     <head>
-        <title>QuizMaster</title>
+        <title>GPuzzles</title>
     </head>
     <style>
         .image {
@@ -321,11 +321,11 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
     <body>
     <div id="quiz_content">
     <?php
-        if(isset($_GET['topic']) == false){
+        if(isset($_GET['name']) == false){
             echo "<h4 style='color:red;'>Error: Missing/Invalid Quiz Topic</h4>";
             exit();
         }
-        $quiz_topic = $_GET['topic'];
+        $quiz_topic = $_GET['name'];
         $current_page = 1;
         if (isset($_GET['page']) == true){
             $current_page = $_GET['page'];
@@ -388,7 +388,7 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
             echo "<div style='text-align:center'><h3 style='color:green'>Congratulations!</h3>";
             echo "<h4>You got $num_correct out of $num_questions_to_show questions correct!</h4>";
             echo "<img id='congratsi' style='width:200px; height:200px;' src='Images/about_images/thumbsup.jpg'><br><br>";
-            echo "<a href='./display_quiz.php?topic=$quiz_topic&page=1&reset_quiz=true'>Reset Quiz</a></div>";
+            echo "<a href='./display_quiz.php?name=$quiz_topic&page=1&reset_quiz=true'>Reset Quiz</a></div>";
             
             // printout the entire quiz questions and answers
             printoutQuizResults($quiz_topic, $num_questions_to_show);
@@ -503,11 +503,11 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
     function nextQuestion(){
         var selection = getSelection();
         if (selection != "0"){
-            var nextPage = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=$next_page&previous_page=$current_page&previous_selection=" ?>";
+            var nextPage = "<?php echo "./display_quiz.php?name=$quiz_topic&page=$next_page&previous_page=$current_page&previous_selection=" ?>";
             nextPage = nextPage + selection;
             window.location.href = nextPage;
         } else{
-            window.location.href = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=$next_page" ?>";
+            window.location.href = "<?php echo "./display_quiz.php?name=$quiz_topic&page=$next_page" ?>";
         }
     }
 
@@ -515,11 +515,11 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
     function previousQuestion(){
         var selection = getSelection();
         if (selection != "0"){
-            var nextPage = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=$previous_page&previous_page=$current_page&previous_selection=" ?>";
+            var nextPage = "<?php echo "./display_quiz.php?name=$quiz_topic&page=$previous_page&previous_page=$current_page&previous_selection=" ?>";
             nextPage = nextPage + selection;
             window.location.href = nextPage;
         } else{
-            window.location.href = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=$previous_page" ?>";
+            window.location.href = "<?php echo "./display_quiz.php?name=$quiz_topic&page=$previous_page" ?>";
         }
     }
 
@@ -531,14 +531,14 @@ function resetUserQuizAnswers($quiz_topic, $num_questions){
             nextPage = nextPage + selection;
             window.location.href = nextPage;
         } else{
-            window.location.href = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=$current_page&quiz_finished=true" ?>";
+            window.location.href = "<?php echo "./display_quiz.php?name=$quiz_topic&page=$current_page&quiz_finished=true" ?>";
         }
     }
 
     // responsible for resetting the quiz's saved answers
     function resetQuiz(){
         // reloads the page and specifies the parameter to manually reset the quiz
-        window.location.href = "<?php echo "./display_quiz.php?topic=$quiz_topic&page=1&reset_quiz=true" ?>";
+        window.location.href = "<?php echo "./display_quiz.php?name=$quiz_topic&page=1&reset_quiz=true" ?>";
     }
     </script>
 

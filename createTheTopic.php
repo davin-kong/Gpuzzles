@@ -13,9 +13,9 @@ echo '</pre>';
 /**
  *  check whether the topic to be created already exists in the database
  */
-function topic_exists_in_db($topic, $db)
+function topic_exists_in_db($name, $db)
 {
-    $sql = "SELECT topic FROM topics WHERE topic= '$topic';";
+    $sql = "SELECT name FROM names WHERE name= '$name';";
     echo $sql;
     $result = mysqli_query($db, $sql);
     
@@ -31,18 +31,18 @@ function topic_exists_in_db($topic, $db)
 
 
 
-if (isset($_POST['topic'])) {
+if (isset($_POST['name'])) {
 
     //escape any special characters in the input string
-    $topic = mysqli_real_escape_string($db, $_POST['topic']);
+    $name = mysqli_real_escape_string($db, $_POST['name']);
 
-    // check whether the topic already exists in the DB
-    $topic_exists = topic_exists_in_db($topic, $db);
+    // check whether the name already exists in the DB
+    $name_exists = name_exists_in_db($name, $db);
     echo "junk";
-    echo $topic_exists;
+    echo $name_exists;
 
     // if the topic exists, return to the list with an error message
-    if ($topic_exists == true) {
+    if ($name_exists == true) {
         exit(header('location: createTopic.php?createTopic=TOPIC_EXISTS'));
     }
 
@@ -85,9 +85,9 @@ if (isset($_POST['topic'])) {
     if (strcmp($status_code, "OK") == 0) {
         $file_moved = move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
         if ($file_moved == true) {
-            $sql = "INSERT INTO topics (topic,image_name) VALUES ('$topic','$file')";
+            $sql = "INSERT INTO names (name,image_name) VALUES ('$name','$file')";
             mysqli_query($db, $sql);
-            exit(header('location: topics_list.php?create_topic_status=SUCCESS'));
+            exit(header('location: names_list.php?create_name_status=SUCCESS'));
         }
     } 
 
